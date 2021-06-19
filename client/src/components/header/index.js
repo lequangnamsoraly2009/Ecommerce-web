@@ -21,10 +21,7 @@ function Header() {
           <Link to="/">Products</Link>
         </li>
         <li>
-          <Link to="/login">LogIn</Link>
-        </li>
-        <li>
-          <Link to="/register">Register</Link>
+          <Link to="/user/login">LogIn</Link>
         </li>
         <li>
           <CloseIcon />

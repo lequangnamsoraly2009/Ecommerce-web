@@ -4,6 +4,7 @@ import { getProducts } from "./productSlice";
 import styled from "styled-components";
 import ProductItem from "../../components/ProductItem";
 import Loading from "../../../../components/Loading";
+import { refreshToken } from "../../../../app/authSlice";
 
 function Products() {
   const dispatch = useDispatch();
@@ -11,6 +12,10 @@ function Products() {
 
   useEffect(() => {
     dispatch(getProducts());
+    const firstLogin = localStorage.getItem("firstLogin");
+    if (firstLogin) {
+      dispatch(refreshToken());
+    }
   }, []);
 
   return (
