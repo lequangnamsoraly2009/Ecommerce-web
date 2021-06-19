@@ -6,7 +6,7 @@ import ProductItem from "../../components/ProductItem";
 
 function Products() {
   const dispatch = useDispatch();
-  const { loading, products } = useSelector((state) => state.product);
+  const { products } = useSelector((state) => state.product);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -15,12 +15,18 @@ function Products() {
   return <ProductsContainer>
       {
           products.map(product => {
-              return <ProductItem key={product._id } />
+              return <ProductItem key={product._id} product={product} />
           })
       }
   </ProductsContainer>;
 }
 
-const ProductsContainer = styled.div``;
+const ProductsContainer = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+    justify-items: center;
+    margin: 20px 0;
+`;
 
 export default Products;

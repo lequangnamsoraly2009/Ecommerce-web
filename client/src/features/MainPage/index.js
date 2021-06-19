@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Products from "./pages/Products";
+import DetailProduct from "./components/detailProduct";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
@@ -10,6 +11,7 @@ function MainPage() {
   return (
     <Switch>
       <Route path="/" exact component={Products} />
+      <Route path="/detail/:id" exact component={DetailProduct} />
       <Route path="/cart" exact component={Cart} />
       <Route path="/login" exact component={Login} />
       <Route path="/register" exact component={Register} />
