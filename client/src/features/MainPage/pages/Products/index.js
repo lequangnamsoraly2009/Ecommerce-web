@@ -1,19 +1,26 @@
-import React, { useEffect } from 'react'
-import ProductsAPI from '../../../../api/ProductsAPI';
-import {useDispatch, useSelector} from 'react-redux'
-import { loadProducts } from './productSlice';
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "./productSlice";
+import styled from "styled-components";
+import ProductItem from "../../components/ProductItem";
 
 function Products() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const { loading, products } = useSelector((state) => state.product);
 
-    dispatch(loadProducts(ProductsAPI().products))
+  useEffect(() => {
+    dispatch(getProducts());
+  }, []);
 
-    return (
-        <div>
-            Products
-        </div>
-    )
+  return <ProductsContainer>
+      {
+          products.map(product => {
+              return <ProductItem key={product._id } />
+          })
+      }
+  </ProductsContainer>;
 }
 
-export default Products
+const ProductsContainer = styled.div``;
+
+export default Products;
