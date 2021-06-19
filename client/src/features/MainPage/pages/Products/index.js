@@ -6,26 +6,28 @@ import ProductItem from "../../components/ProductItem";
 import Loading from "../../../../components/Loading";
 import { refreshToken } from "../../../../app/authSlice";
 
+
 function Products() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
 
   useEffect(() => {
     dispatch(getProducts());
-    const firstLogin = localStorage.getItem("firstLogin");
-    if (firstLogin) {
-      dispatch(refreshToken());
-    }
+    
   }, []);
 
   return (
     <>
-    <ProductsContainer>
-      {products.map((product) => {
-        return <ProductItem key={product._id} product={product} />;
-      })}
-    </ProductsContainer>
-    {products.length === 0  && <Loading />}
+    {(localStorage.getItem('firstLogin') && dispatch(refreshToken()) && (
+      <>
+      <ProductsContainer>
+        {products.map((product) => {
+          return <ProductItem key={product._id} product={product} />;
+        })}
+      </ProductsContainer>
+      {products.length === 0  && <Loading />}
+      </>
+    ))}
     </>
   );
 }
