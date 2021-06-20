@@ -1,17 +1,22 @@
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import styled from "styled-components";
+import Footer from "./components/Footer";
 import Header from "./components/header";
 import MainPage from "./features/MainPage";
+import { DataProvider } from "./GlobalState";
 
 function App() {
   return (
-    <Router>
-      <AppContainer>
-        <Header />
-        <MainPage />
-      </AppContainer>
-    </Router>
+    <DataProvider>
+      <Router>
+        <AppContainer>
+          <Header />
+          <MainPage />
+        </AppContainer>
+        <Footer />
+      </Router>
+    </DataProvider>
   );
 }
 

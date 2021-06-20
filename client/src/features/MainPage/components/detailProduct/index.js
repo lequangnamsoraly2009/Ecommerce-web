@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import ProductItem from "../ProductItem";
+import {GlobalState} from '../../../../GlobalState';
 
 function DetailProduct() {
   const [detailProduct, setDetailProduct] = useState([]);
   const params = useParams();
-  const { products } = useSelector((state) => state.product);
+  const state = useContext(GlobalState);
+  const [products] = state.productsAPI.products;
 
   useEffect(() => {
     if (params.id) {

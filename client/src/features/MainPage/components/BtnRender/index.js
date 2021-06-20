@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { GlobalState } from "../../../../GlobalState";
 
 function BtnRender({ product }) {
+  const state = useContext(GlobalState);
+  const [isAdmin] = state.userAPI.isAdmin;
+  const addCart = state.userAPI.addCart;
+
   return (
     <ProductItemButton>
-      <ButtonBuy>
-        <Link to="#!">Buy</Link>
-      </ButtonBuy>
-      <ButtonView>
-        <Link to={`/detail/${product._id}`}>View</Link>
-      </ButtonView>
+      {isAdmin ? (
+        <>
+          <ButtonBuy>
+            <Link to="#!">Delelte</Link>
+          </ButtonBuy>
+          <ButtonView>
+            <Link to={`/edit_product/${product._id}`}>Edit</Link>
+          </ButtonView>
+        </>
+      ) : (
+        <>
+          <ButtonBuy>
+            <Link to="#!" onClick={()=> addCart(product)}>Buy</Link>
+          </ButtonBuy>
+          <ButtonView>
+            <Link to={`/detail/${product._id}`}>View</Link>
+          </ButtonView>
+        </>
+      )}
     </ProductItemButton>
   );
 }

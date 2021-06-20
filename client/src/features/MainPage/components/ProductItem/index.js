@@ -3,9 +3,12 @@ import styled from "styled-components";
 
 import BtnRender from "../BtnRender";
 
-function ProductItem({ product }) {
+function ProductItem({ product , isAdmin }) {
   return (
     <ProductItemContainer>
+      {
+        isAdmin && <input type="checkbox" checked={product.checked} />
+      }
       <img src={product.images.url} alt="Aloha ahihi" />
       <ProductItemBox>
         <h2 title={product.title}>{product.title}</h2>
@@ -33,6 +36,11 @@ const ProductItemContainer = styled.div`
     height: 300px;
     display: block;
     object-fit: cover;
+  }
+  input {
+    position: absolute;
+    width: 25px;
+    height: 25px;
   }
 `;
 

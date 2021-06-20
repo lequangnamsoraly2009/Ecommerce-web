@@ -1,33 +1,21 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "./productSlice";
 import styled from "styled-components";
 import ProductItem from "../../components/ProductItem";
 import Loading from "../../../../components/Loading";
-import { refreshToken } from "../../../../app/authSlice";
-
+import { useContext } from "react";
+import {GlobalState} from "../../../../GlobalState";
 
 function Products() {
-  const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.product);
-
-  useEffect(() => {
-    dispatch(getProducts());
-    
-  }, []);
-
+  const state = useContext(GlobalState);
+  const [products] = state.productsAPI.products;
+  const [isAdmin] = state.userAPI.isAdmin;
   return (
     <>
-    {(localStorage.getItem('firstLogin') && dispatch(refreshToken()) && (
-      <>
       <ProductsContainer>
         {products.map((product) => {
-          return <ProductItem key={product._id} product={product} />;
+          return <ProductItem key={product._id} product={product} isAdmin={isAdmin} />;
         })}
       </ProductsContainer>
-      {products.length === 0  && <Loading />}
-      </>
-    ))}
+      {products.length === 0 && <Loading />}
     </>
   );
 }
