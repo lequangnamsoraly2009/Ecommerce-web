@@ -1,13 +1,78 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalState } from "../../../../GlobalState";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
+import axios from "axios";
+import PayPal from './PayPal'
 
 function Cart() {
   const state = useContext(GlobalState);
-  const [cart] = state.userAPI.cart;
-  const [totalPrice,setTotalPrice] = useState(0);
+  const [cart, setCart] = state.userAPI.cart;
+  const [token] = state.token;
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const updateAndAddToCart = async () => {
+    try {
+      await axios.patch(
+        "/user/addcart",
+        { cart },
+        {
+          headers: { Authorization: token },
+        }
+      );
+    } catch (error) {
+      return error.response.data.msg;
+    }
+  };
+
+  useEffect(() => {
+    const getTotal = () => {
+      const total = cart.reduce((prevItem, nextItem) => {
+        return prevItem + nextItem.price * nextItem.quantity;
+      }, 0);
+      setTotalPrice(total);
+    };
+    getTotal();
+  }, [cart]);
+
+  const increment = (idProduct) => {
+    cart.forEach((product) => {
+      if (product._id === idProduct) {
+        product.quantity += 1;
+      }
+    });
+    setCart([...cart]);
+    updateAndAddToCart();
+  };
+
+  const descrement = (idProduct) => {
+    cart.forEach((product) => {
+      if (product._id === idProduct) {
+        product.quantity === 1
+          ? (product.quantity = 1)
+          : (product.quantity -= 1);
+      }
+    });
+    setCart([...cart]);
+    updateAndAddToCart();
+  };
+
+  const removeProduct = (idProduct) => {
+    if (window.confirm("Are you sure you want to remove it")) {
+      cart.forEach((product, index) => {
+        if (product._id === idProduct) {
+          cart.splice(index, 1);
+        }
+      });
+      setCart([...cart]);
+      updateAndAddToCart();
+    }
+  };
+
+  const tranSuccess = async(payment) =>{
+    console.log(payment)
+  }
 
   if (cart.length === 0)
     return (
@@ -22,7 +87,7 @@ function Cart() {
   return (
     <CartContainer>
       {cart.map((product) => (
-        <DetailContainer>
+        <DetailContainer key={product._id}>
           <img src={product.images.url} alt="" />
           <DetailBox>
             <BoxRow>
@@ -32,19 +97,19 @@ function Cart() {
             <p>{product.description}</p>
             <p>{product.content}</p>
             <MountQuantity>
-              <button> - </button>
+              <button onClick={() => descrement(product._id)}> - </button>
               <span>{product.quantity}</span>
-              <button> +</button>
+              <button onClick={() => increment(product._id)}> +</button>
             </MountQuantity>
             <DeleteProduct>
-              <CloseIcon />
+              <CloseIcon onClick={() => removeProduct(product._id)} />
             </DeleteProduct>
           </DetailBox>
         </DetailContainer>
       ))}
       <TotalMoney>
         <h3>Total: $ {totalPrice}</h3>
-        <Link to="#!">PayMent</Link>
+        <PayPal totalPrice={totalPrice} tranSuccess={tranSuccess} />
       </TotalMoney>
     </CartContainer>
   );
@@ -155,7 +220,7 @@ const MountQuantity = styled.div`
 
 const DeleteProduct = styled.div`
   > .MuiSvgIcon-root {
-      font-size: 30px;
+    font-size: 30px;
     position: absolute;
     top: 0;
     right: 5px;
@@ -166,15 +231,14 @@ const DeleteProduct = styled.div`
 `;
 
 const TotalMoney = styled.div`
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    >h3{
-        color: crimson;
-
-    }
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  > h3 {
+    color: crimson;
+  }
 `;
 
 export default Cart;

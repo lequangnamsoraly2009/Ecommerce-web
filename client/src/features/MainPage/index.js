@@ -14,19 +14,21 @@ function MainPage() {
     <>
       {!isLogged ? (
         <>
-          <Route path="/user" component={AuthUser} />
-          <Route path="/" exact component={Products} />
-          <Route path="*" exact component={NotFound} />
+          <Switch>
+            <Route path="/" exact component={Products} />
+            <Route path="/user" component={AuthUser} />
+            <Route  component={NotFound} />
+          </Switch>
         </>
       ) : (
         <>
           <Switch>
             <Route path="/" exact component={Products} />
-            <Route path="/detail/:id" exact component={DetailProduct} />
-            <Route path="/cart" exact component={Cart} />
+            <Route path="/detail/:id"  component={DetailProduct} />
+            <Route path="/cart"  component={Cart} />
             <Redirect from="user/login" to="/" />
             <Redirect from="user/register" to="/" />
-            <Route path="*" exact component={NotFound} />
+            <Route  component={NotFound} />
           </Switch>
         </>
       )}
