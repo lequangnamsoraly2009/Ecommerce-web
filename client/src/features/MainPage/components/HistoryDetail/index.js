@@ -22,11 +22,17 @@ function HistoryDetail() {
 
   if (historyDetail.length === 0) return null;
 
+  const totalMoneyBiden = () => {
+    let total = 0;
+    historyDetail.cart.forEach((item) => (total += item.price * item.quantity));
+    return total;
+  };
+
   return (
     <HistoryDetailContainer>
       <h2>INFORMATION MY ORDER</h2>
       <HistoryPage>
-        <thead>
+        <thead style={{ background: "rgba(3,165,206,0.7" }}>
           <tr>
             <th>Name</th>
             <th>Address</th>
@@ -53,7 +59,7 @@ function HistoryDetail() {
 
       <br />
       <HistoryPage style={{ margin: "30px 0px" }}>
-        <thead>
+        <thead style={{ background: "rgba(3,165,206,0.7" }}>
           <tr>
             <th>Thumbnail</th>
             <th>Products</th>
@@ -64,16 +70,26 @@ function HistoryDetail() {
         <tbody>
           {historyDetail.cart.map((item) => (
             <HistoryItem key={item._id}>
-              <th><img src={item.images.url} alt =""/></th>
               <th>
-                {item.title}
+                <img src={item.images.url} alt="" />
               </th>
+              <th>{item.title}</th>
               <th>{item.quantity}</th>
-              <th style={{color:"red"}}>{`$ ${item.price * item.quantity}`}</th>
+              <th style={{ color: "red" }}>{`$ ${
+                item.price * item.quantity
+              }`}</th>
             </HistoryItem>
           ))}
         </tbody>
       </HistoryPage>
+      <Footer>
+        <TotalMoney>
+          <h3>Status: <span>{totalMoneyBiden() < 2000 ? 'PENDING' : 'CONFIRMED'}</span></h3>
+        </TotalMoney>
+        <TotalMoney>
+          <h3>Total: {totalMoneyBiden()} Biden </h3>
+        </TotalMoney>
+      </Footer>
     </HistoryDetailContainer>
   );
 }
@@ -112,11 +128,36 @@ const HistoryItem = styled.tr`
     > a {
       color: rgb(3, 165, 206);
     }
-    img{
-        width: 50px;
-        height: 70px;
+    img {
+      width: 50px;
+      height: 70px;
     }
   }
+`;
+
+const TotalMoney = styled.div`
+  height: 40px;
+  width: 220px;
+  border: 1px solid #888;
+  margin-bottom: 30px;
+  
+  > h3 {
+    margin-top: 8px;
+    margin-left: 10px;
+    display: flex;
+  flex-direction:row;
+  
+    >span{
+        margin-left: 5px;
+        color: red;
+    }
+  }
+`;
+
+const Footer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 `;
 
 export default HistoryDetail;
