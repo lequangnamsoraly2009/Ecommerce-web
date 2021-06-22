@@ -8,11 +8,13 @@ import AuthUser from "./pages/Auth";
 import { GlobalState } from "../../GlobalState";
 import HistoryOrder from "./pages/HistoryOrder";
 import HistoryDetail from "./components/HistoryDetail";
+import Categories from "./pages/Categories";
 
 
 function MainPage() {
   const state = useContext(GlobalState);
   const [isLogged] = state.userAPI.isLogged;
+  const [isAdmin] = state.userAPI.isAdmin;
   return (
     <>
       {!isLogged ? (
@@ -29,6 +31,9 @@ function MainPage() {
             <Route path="/" exact component={Products} />
             <Route path="/detail/:id"  component={DetailProduct} />
             <Route path="/cart" exact component={Cart} />
+
+            <Route path="/category" exact component={isAdmin ? Categories : NotFound} />
+
 
             <Route path="/history" exact component={HistoryOrder} />
             <Route path="/history/:id" component={HistoryDetail} />

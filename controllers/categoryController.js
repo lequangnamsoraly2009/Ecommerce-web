@@ -13,7 +13,8 @@ const categoryController = {
         try {
             // Admin all access -> Create,Delete,Update -> Only Admin
             // USer only read 
-            const {name} = req.body;
+            let {name} = req.body;
+            name = name.toLowerCase();
 
             const category = await Category.findOne({name: name});
             if(category) return res.status(400).json({status: false, msg: "Category already exists"});
@@ -22,7 +23,7 @@ const categoryController = {
 
             await newCategory.save();
 
-            res.json("Add success");
+            return res.status(200).json({status: true, msg: "Add category successfully !! Hihi"});
 
         } catch (error) {
             return res.status(500).json({status: false, msg: error.message})

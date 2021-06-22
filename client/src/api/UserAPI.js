@@ -17,9 +17,9 @@ function UserAPI(token) {
           });
           setIsLogged(true);
           response.data.role === 1 ? setIsAdmin(true) : setIsAdmin(false);
-          setCart(response.data.cart);
+          setCart(response.data?.cart);
         } catch (error) {
-          alert(error.response.data.msg);
+          alert(error.response.data?.msg);
         }
       };
       getUser();
@@ -29,15 +29,26 @@ function UserAPI(token) {
   useEffect(() => {
     if (token) {
       const getHistory = async () => {
-        const response = await axios.get("/user/history", {
-          headers: { Authorization: token },
-        });
-        // console.log(response)
-        setHistory(response.data);
+
+        if(isAdmin){
+          const response = await axios.get("/api/payment", {
+            headers: { Authorization: token },
+          });
+          // console.log(response)
+          setHistory(response.data);
+        }
+        else{
+          const response = await axios.get("/user/history", {
+            headers: { Authorization: token },
+          });
+          // console.log(response)
+          setHistory(response.data);
+        }
+
       };
       getHistory();
     }
-  }, [token,cart]);
+  }, [token,cart,isAdmin]);
 
   const addCart = async (product) => {
     if (!isLogged)

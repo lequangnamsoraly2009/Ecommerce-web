@@ -30,7 +30,7 @@ function HistoryDetail() {
 
   return (
     <HistoryDetailContainer>
-      <h2>INFORMATION MY ORDER</h2>
+      <h2>INFORMATION YOUR ORDER</h2>
       <HistoryPage>
         <thead style={{ background: "rgba(3,165,206,0.7" }}>
           <tr>
