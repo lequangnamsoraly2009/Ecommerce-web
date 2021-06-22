@@ -8,6 +8,14 @@ function BtnRender({ product }) {
   const [isAdmin] = state.userAPI.isAdmin;
   const addCart = state.userAPI.addCart;
 
+  const scrollTop = () =>{
+    window.scroll({
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth'
+    });
+  }
+
   return (
     <ProductItemButton>
       {isAdmin ? (
@@ -25,7 +33,7 @@ function BtnRender({ product }) {
             <Link to="#!" onClick={()=> addCart(product)}>Buy</Link>
           </ButtonBuy>
           <ButtonView>
-            <Link to={`/detail/${product._id}`}>View</Link>
+            <Link onClick={()=> scrollTop()}to={`/detail/${product._id}`}>View</Link>
           </ButtonView>
         </>
       )}
@@ -70,6 +78,9 @@ const ButtonView = styled.button`
   }
   background: teal;
   margin-left: 5px;
+  :focus{
+    scroll-behavior: smooth;
+  }
 `;
 
 export default BtnRender;

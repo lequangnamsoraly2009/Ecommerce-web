@@ -6,6 +6,7 @@ function UserAPI(token) {
   const [isAdmin, setIsAdmin] = useState(false);
   // const [checked,setChecked] = useState(false);
   const [cart, setCart] = useState([]);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     if (token) {
@@ -16,7 +17,7 @@ function UserAPI(token) {
           });
           setIsLogged(true);
           response.data.role === 1 ? setIsAdmin(true) : setIsAdmin(false);
-          setCart(response.data.cart)
+          setCart(response.data.cart);
         } catch (error) {
           alert(error.response.data.msg);
         }
@@ -24,6 +25,19 @@ function UserAPI(token) {
       getUser();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      const getHistory = async () => {
+        const response = await axios.get("/user/history", {
+          headers: { Authorization: token },
+        });
+        // console.log(response)
+        setHistory(response.data);
+      };
+      getHistory();
+    }
+  }, [token,cart]);
 
   const addCart = async (product) => {
     if (!isLogged)
@@ -35,10 +49,13 @@ function UserAPI(token) {
     if (checkItemHasCart) {
       setCart([...cart, { ...product, quantity: 1 }]);
 
-      await axios.patch('/user/addcart',{cart:[...cart, { ...product, quantity: 1 }]},{
-        headers: {Authorization: token}
-      })
-
+      await axios.patch(
+        "/user/addcart",
+        { cart: [...cart, { ...product, quantity: 1 }] },
+        {
+          headers: { Authorization: token },
+        }
+      );
     } else {
       alert("This product has been added ! Check cart");
     }
@@ -48,6 +65,7 @@ function UserAPI(token) {
     isAdmin: [isAdmin, setIsAdmin],
     cart: [cart, setCart],
     addCart: addCart,
+    history: [history,setHistory]
   };
 }
 

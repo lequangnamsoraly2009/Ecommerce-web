@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import axios from "axios";
-import PayPal from './PayPal'
+import PayPal from "./PayPal";
 
 function Cart() {
   const state = useContext(GlobalState);
@@ -12,7 +12,7 @@ function Cart() {
   const [token] = state.token;
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const updateAndAddToCart = async () => {
+  const updateAndAddToCart = async (cart) => {
     try {
       await axios.patch(
         "/user/addcart",
@@ -43,7 +43,7 @@ function Cart() {
       }
     });
     setCart([...cart]);
-    updateAndAddToCart();
+    updateAndAddToCart(cart);
   };
 
   const descrement = (idProduct) => {
@@ -55,7 +55,7 @@ function Cart() {
       }
     });
     setCart([...cart]);
-    updateAndAddToCart();
+    updateAndAddToCart(cart);
   };
 
   const removeProduct = (idProduct) => {
@@ -66,22 +66,35 @@ function Cart() {
         }
       });
       setCart([...cart]);
-      updateAndAddToCart();
+      updateAndAddToCart(cart);
     }
   };
 
-  const tranSuccess = async(payment) =>{
-    console.log(payment)
-  }
+  const tranSuccess = async (payment) => {
+    const { paymentID, address } = payment;
+    await axios.post(
+      "/api/payment",
+      { cart, paymentID, address },
+      {
+        headers: { Authorization: token },
+      }
+    );
+
+    setCart([]);
+    updateAndAddToCart([]);
+    alert("Your order has been successfully placed");
+  };
 
   if (cart.length === 0)
     return (
+      <>
       <NoItemCart>
         <h1>CART EMPTY</h1>
         <Link to="/">
           <p>Back</p>
         </Link>
       </NoItemCart>
+      </>
     );
 
   return (
