@@ -152,12 +152,12 @@ const userController = {
 
 const createAccessToken = (user) => {
   // Token expiresIn 1 day
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "17s" });
 };
 
 const createRefreshToken = (user) => {
   // Refresh Token expiresIn 7 day
-  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "1d" });
 };
 
 module.exports = userController;

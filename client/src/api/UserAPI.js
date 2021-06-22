@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 function UserAPI(token) {
   const [isLogged, setIsLogged] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  // const [checked,setChecked] = useState(false);
   const [cart, setCart] = useState([]);
   const [history, setHistory] = useState([]);
 
@@ -26,29 +25,6 @@ function UserAPI(token) {
     }
   }, [token]);
 
-  useEffect(() => {
-    if (token) {
-      const getHistory = async () => {
-
-        if(isAdmin){
-          const response = await axios.get("/api/payment", {
-            headers: { Authorization: token },
-          });
-          // console.log(response)
-          setHistory(response.data);
-        }
-        else{
-          const response = await axios.get("/user/history", {
-            headers: { Authorization: token },
-          });
-          // console.log(response)
-          setHistory(response.data);
-        }
-
-      };
-      getHistory();
-    }
-  }, [token,cart,isAdmin]);
 
   const addCart = async (product) => {
     if (!isLogged)

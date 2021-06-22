@@ -9,6 +9,7 @@ import { GlobalState } from "../../GlobalState";
 import HistoryOrder from "./pages/HistoryOrder";
 import HistoryDetail from "./components/HistoryDetail";
 import Categories from "./pages/Categories";
+import CreateProduct from "./pages/Products/CreateProduct";
 
 
 function MainPage() {
@@ -33,6 +34,9 @@ function MainPage() {
             <Route path="/cart" exact component={Cart} />
 
             <Route path="/category" exact component={isAdmin ? Categories : NotFound} />
+
+            <Route path="/create_product" exact component={isAdmin ? CreateProduct : NotFound} />
+
 
 
             <Route path="/history" exact component={HistoryOrder} />

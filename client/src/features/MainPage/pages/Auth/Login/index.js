@@ -20,7 +20,6 @@ function Login() {
     e.preventDefault();
     try {
       await axios.post("/user/login", { ...user });
-      localStorage.setItem("firstLogin", true);
       window.location.href = "/";
     } catch (error) {
       alert(error.response.data.msg);
