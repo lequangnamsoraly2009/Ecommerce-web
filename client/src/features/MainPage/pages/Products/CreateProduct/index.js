@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalState } from "../../../../../GlobalState";
 import styled from "styled-components";
 import CloseIcon from "@material-ui/icons/Close";
 import axios from "axios";
 import Loading from "../../../../../components/Loading";
+import { useHistory, useParams } from "react-router-dom";
 
 const initialState = {
   product_id: "",
@@ -12,6 +13,7 @@ const initialState = {
   description: "",
   content: "",
   category: "",
+  _id: "",
 };
 
 function CreateProduct() {
@@ -22,6 +24,27 @@ function CreateProduct() {
   const [loading, setLoading] = useState(false);
   const [isAdmin] = state.userAPI.isAdmin;
   const [token] = state.token;
+  const history = useHistory();
+  const param = useParams();
+  const [onEdit, setOnEdit] = useState(false);
+
+  const [products] = state.productsAPI.products;
+
+  useEffect(() => {
+    if (param.id) {
+      setOnEdit(true);
+      products.forEach((product) => {
+        if (product._id === param.id) {
+          setProduct(product);
+          setImages(product.images);
+        }
+      });
+    } else {
+      setOnEdit(false);
+      setProduct(initialState);
+      setImages(false);
+    }
+  }, [param.id, products]);
 
   const styleUpload = {
     display: images ? "block" : "none",
@@ -72,7 +95,7 @@ function CreateProduct() {
       if (!isAdmin) return alert("Warning: Access Denied");
       setLoading(true);
       await axios.post(
-        "api/destroy",
+        "/api/destroy",
         { public_id: images.public_id },
         {
           headers: { Authorization: token },
@@ -89,6 +112,47 @@ function CreateProduct() {
     e.preventDefault();
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
+  };
+
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!isAdmin) return alert("Warning: Access Denied");
+
+      if (!images) return alert("HEY! Bro forgot to upload the picture");
+
+      if (onEdit) {
+        await axios.put(
+          `/api/products/${product._id}`,
+          { ...product, images },
+          {
+            headers: { Authorization: token },
+          }
+        );
+      } else {
+        await axios.post(
+          "/api/products",
+          { ...product, images },
+          {
+            headers: { Authorization: token },
+          }
+        );
+      }
+
+      setImages(false);
+      setProduct(initialState);
+      if(onEdit){
+        alert("Update product successfully! GoodJob! ");
+
+      }else{
+        alert("Create product successfully! Congrats! ");
+
+      }
+      history.push("/");
+    } catch (error) {
+      alert(error.response.data.msg);
+    }
   };
 
   return (
@@ -111,7 +175,7 @@ function CreateProduct() {
           </ImageHere>
         )}
       </UploadImage>
-      <FormCreate>
+      <FormCreate onSubmit={handleSubmitForm}>
         <FormCreateRow>
           <label htmlFor="product_id">Product ID</label>
           <input
@@ -121,6 +185,7 @@ function CreateProduct() {
             required
             value={product.product_id}
             onChange={handleChangeInput}
+            disabled={onEdit}
           />
         </FormCreateRow>
         <FormCreateRow>
@@ -171,7 +236,11 @@ function CreateProduct() {
         </FormCreateRow>
         <FormCreateRow>
           <label htmlFor="category">Category</label>
-          <select name="category" value={product.category} onChange={handleChangeInput}>
+          <select
+            name="category"
+            value={product.category}
+            onChange={handleChangeInput}
+          >
             <option value="">Please select a category</option>
             {categories.categories.map((category) => (
               <option value={category._id} key={category._id}>
@@ -180,7 +249,9 @@ function CreateProduct() {
             ))}
           </select>
         </FormCreateRow>
-        <button type="submit">Create Product</button>
+        <button type="submit">
+          {onEdit ? "Update Product" : "Create Product"}
+        </button>
       </FormCreate>
     </CreateProductContainer>
   );

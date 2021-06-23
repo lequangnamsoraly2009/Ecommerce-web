@@ -36,8 +36,7 @@ function MainPage() {
             <Route path="/category" exact component={isAdmin ? Categories : NotFound} />
 
             <Route path="/create_product" exact component={isAdmin ? CreateProduct : NotFound} />
-
-
+            <Route path="/edit_product/:id" exact component={isAdmin ? CreateProduct : NotFound} />
 
             <Route path="/history" exact component={HistoryOrder} />
             <Route path="/history/:id" component={HistoryDetail} />

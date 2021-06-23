@@ -90,7 +90,7 @@ const productController = {
       if (product)
         return res
           .status(400)
-          .json({ status: false, msg: "Product already exists" });
+          .json({ status: false, msg: "Something is wrong! Product ID already exists" });
 
       const newProduct = new Products({
         product_id,

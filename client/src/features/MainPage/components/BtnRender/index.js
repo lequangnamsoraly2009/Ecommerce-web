@@ -24,7 +24,7 @@ function BtnRender({ product }) {
             <Link to="#!">Delelte</Link>
           </ButtonBuy>
           <ButtonView>
-            <Link to={`/edit_product/${product._id}`}>Edit</Link>
+            <Link onClick={()=> scrollTop()} to={`/edit_product/${product._id}`}>Edit</Link>
           </ButtonView>
         </>
       ) : (
@@ -33,7 +33,7 @@ function BtnRender({ product }) {
             <Link to="#!" onClick={()=> addCart(product)}>Buy</Link>
           </ButtonBuy>
           <ButtonView>
-            <Link onClick={()=> scrollTop()}to={`/detail/${product._id}`}>View</Link>
+            <Link onClick={()=> scrollTop()} to={`/detail/${product._id}`}>View</Link>
           </ButtonView>
         </>
       )}
