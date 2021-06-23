@@ -16,6 +16,9 @@ function Header() {
   const logoutClick = async (e) => {
     e.preventDefault();
     await axios.get("/user/logout");
+
+    localStorage.removeItem('firstLogin');
+
     window.location.href = '/';
   };
 

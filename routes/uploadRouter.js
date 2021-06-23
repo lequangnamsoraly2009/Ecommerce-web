@@ -14,7 +14,7 @@ cloudinary.config({
 });
 
 //Upload Image on Cloud
-router.post("/upload",  async (req, res) => {
+router.post("/upload",auth, authAdmin, async (req, res) => {
   try {
     console.log(req.files);
     if (!req.files || Object.keys(req.files).length === 0) // Object.keys(req.files).length  -> check number keys in files -> If 1 files complete so length > 0
@@ -50,7 +50,7 @@ router.post("/upload",  async (req, res) => {
 });
 
 //Delete Image
-router.post("/destroy",  (req, res) => {
+router.post("/destroy",auth, authAdmin,  (req, res) => {
   try {
     const { public_id } = req.body;
     if (!public_id)

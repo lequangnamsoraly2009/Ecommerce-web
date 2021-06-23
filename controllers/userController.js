@@ -1,4 +1,4 @@
-const Payments = require('../models/paymentModel')
+const Payments = require("../models/paymentModel");
 const Users = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -42,6 +42,7 @@ const userController = {
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
         path: "/user/refresh_token",
+        maxAge: 7 * 24 * 60 * 60 * 1000, //7d
       });
       res.json({ accesstoken });
     } catch (error) {
@@ -72,6 +73,7 @@ const userController = {
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
         path: "/user/refresh_token",
+        maxAge: 7 * 24 * 60 * 60 * 1000, //7d
       });
       res.json({ accesstoken });
 
@@ -126,28 +128,36 @@ const userController = {
   addCart: async (req, res) => {
     try {
       const user = await Users.findById(req.user.id);
-      if(!user) return res.status(400).json({status: false, msg:"User does not exist"});
+      if (!user)
+        return res
+          .status(400)
+          .json({ status: false, msg: "User does not exist" });
 
-      await Users.findOneAndUpdate({_id: req.user.id},{
-        cart: req.body.cart
-      })
+      await Users.findOneAndUpdate(
+        { _id: req.user.id },
+        {
+          cart: req.body.cart,
+        }
+      );
 
-      return res.json({msg:"Added to cart"});
+      return res.json({ msg: "Added to cart" });
     } catch (error) {
       return res.status(500).json({ status: false, msg: error.message });
     }
   },
-  getHistory : async (req, res) => {
+  getHistory: async (req, res) => {
     try {
-      const histories = await Payments.find({user_id: req.user.id});
-      if(!histories) return res.status(400).json({status: false,msg:"User does not exist"});
+      const histories = await Payments.find({ user_id: req.user.id });
+      if (!histories)
+        return res
+          .status(400)
+          .json({ status: false, msg: "User does not exist" });
 
       res.json(histories);
-
     } catch (error) {
-      return res.status(500).json({ status: false, msg: error.message})
+      return res.status(500).json({ status: false, msg: error.message });
     }
-  }
+  },
 };
 
 const createAccessToken = (user) => {
@@ -157,7 +167,7 @@ const createAccessToken = (user) => {
 
 const createRefreshToken = (user) => {
   // Refresh Token expiresIn 7 day
-  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "1d" });
+  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 };
 
 module.exports = userController;

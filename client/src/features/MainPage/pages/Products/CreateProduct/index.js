@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { GlobalState } from "../../../../../GlobalState";
 import styled from "styled-components";
 import CloseIcon from "@material-ui/icons/Close";
+import axios from "axios";
+import Loading from "../../../../../components/Loading";
 
 const initialState = {
   product_id: "",
@@ -18,22 +20,96 @@ function CreateProduct() {
   const [categories] = state.categoriesAPI.categories;
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAdmin] = state.userAPI.isAdmin;
+  const [token] = state.token;
 
   const styleUpload = {
-    display: images ? "block" : 'none'
-  }
+    display: images ? "block" : "none",
+  };
+
+  const handleUploadFile = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isAdmin) {
+        return alert("Warning: Access Denied");
+      }
+      const file = e.target.files[0];
+      console.log(file);
+
+      if (!file) {
+        return alert("File is not exist");
+      }
+
+      if (file.size > 1024 * 1024) {
+        return alert("File is too large");
+      }
+
+      if (file.type !== "image/jpeg" && file.type !== "image/png") {
+        return alert("File is incorrect format");
+      }
+
+      let formData = new FormData();
+      formData.append("file", file);
+
+      setLoading(true);
+      const response = await axios.post("/api/upload", formData, {
+        headers: {
+          "content-type": "multipart/form-data",
+          Authorization: token,
+        },
+      });
+
+      setLoading(false);
+      setImages(response.data);
+    } catch (error) {
+      alert(error.response.data.msg);
+    }
+  };
+
+  const handleDeleteImage = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isAdmin) return alert("Warning: Access Denied");
+      setLoading(true);
+      await axios.post(
+        "api/destroy",
+        { public_id: images.public_id },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      setLoading(false);
+      setImages(false);
+    } catch (error) {
+      alert(error.response.data.msg);
+    }
+  };
+
+  const handleChangeInput = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
+  };
 
   return (
     <CreateProductContainer>
       <UploadImage>
-        <input type="file" name="file" id="file_up" />
-        <ImageHere id="file_img" style={styleUpload}>
-          <img
-            src=""
-            alt=""
-          />
-          <CloseIcon />
-        </ImageHere>
+        <input
+          type="file"
+          name="file"
+          id="file_up"
+          onChange={handleUploadFile}
+        />
+        {loading ? (
+          <ImageHere id="file_img">
+            <Loading />
+          </ImageHere>
+        ) : (
+          <ImageHere id="file_img" style={styleUpload}>
+            <img src={images ? images.url : ""} alt="" />
+            <CloseIcon onClick={handleDeleteImage} />
+          </ImageHere>
+        )}
       </UploadImage>
       <FormCreate>
         <FormCreateRow>
@@ -44,6 +120,7 @@ function CreateProduct() {
             id="product_id"
             required
             value={product.product_id}
+            onChange={handleChangeInput}
           />
         </FormCreateRow>
         <FormCreateRow>
@@ -54,6 +131,7 @@ function CreateProduct() {
             id="title"
             required
             value={product.title}
+            onChange={handleChangeInput}
           />
         </FormCreateRow>
         <FormCreateRow>
@@ -64,6 +142,7 @@ function CreateProduct() {
             id="price"
             required
             value={product.price}
+            onChange={handleChangeInput}
           />
         </FormCreateRow>
         <FormCreateRow>
@@ -74,8 +153,8 @@ function CreateProduct() {
             id="description"
             required
             value={product.description}
-            rows='5'
-            
+            rows="5"
+            onChange={handleChangeInput}
           />
         </FormCreateRow>
         <FormCreateRow>
@@ -87,11 +166,12 @@ function CreateProduct() {
             required
             value={product.content}
             rows="5"
+            onChange={handleChangeInput}
           />
         </FormCreateRow>
         <FormCreateRow>
           <label htmlFor="category">Category</label>
-          <select name="category" value={product.category}>
+          <select name="category" value={product.category} onChange={handleChangeInput}>
             <option value="">Please select a category</option>
             {categories.categories.map((category) => (
               <option value={category._id} key={category._id}>
@@ -119,7 +199,8 @@ const UploadImage = styled.div`
   max-width: 450px;
   height: 500px;
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #777;
+  border-radius: 5px;
   padding: 15px;
   margin: 20px;
   position: relative;
@@ -177,43 +258,43 @@ const ImageHere = styled.div`
 `;
 
 const FormCreate = styled.form`
-  max-width:500px;
+  max-width: 500px;
   min-width: 250px;
   width: 100%;
   height: 100%;
   margin: 15px 30px;
-  >button {
-    width:200px;
-    height:40px;
-    background: rgba(6,165,206,0.9);
+  > button {
+    width: 200px;
+    height: 40px;
+    background: rgba(6, 165, 206, 0.9);
     color: #fff;
     text-transform: uppercase;
-    letter-spacing:2px;
+    letter-spacing: 2px;
     font-weight: 900;
     border-radius: 5px;
   }
-
 `;
 
 const FormCreateRow = styled.div`
   width: 100%;
   margin: 15px 0;
-  >input,textarea{
+  > input,
+  textarea {
     width: 100%;
     min-height: 40px;
     padding: 0 5px;
-    resize : none;
+    resize: none;
   }
-  >textarea{
+  > textarea {
     padding-top: 5px;
   }
-  >select{
-    padding: 0 5px; 
+  > select {
+    padding: 0 5px;
     margin-left: 20px;
     height: 40px;
     min-width: 180px;
     max-width: 300px;
-    >option{
+    > option {
       font-size: 20px;
       font-weight: 800;
     }
