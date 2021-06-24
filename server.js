@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const express = require('express')
-const mongoose = require('mongoose')
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const cookieParser = require('cookie-parser')
@@ -31,12 +30,14 @@ app.use('/api',require('./routes/paymentRouter'));
 // Connect to mongodb server
 db.onConnection()
 
-if(process.env.NODE_ENV !== 'production'){
+
+if(process.env.NODE_ENV === 'production'){
     app.use(express.static('client/build'))
-    app.get('*',(req,res)=>{
-        res.sendFile(path.join(__dirname,'client','build','index.html'))
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
     })
 }
+
 
 
 const PORT = process.env.PORT || 5000
