@@ -7,32 +7,29 @@ import axios from "axios";
 function HistoryOrder() {
   const state = useContext(GlobalState);
   const [token] = state.token;
-  const [history,setHistory] = state.userAPI.history;
+  const [history, setHistory] = state.userAPI.history;
   const [isAdmin] = state.userAPI.isAdmin;
 
   useEffect(() => {
     if (token) {
       const getHistory = async () => {
-
-        if(isAdmin){
+        if (isAdmin) {
           const response = await axios.get("/api/payment", {
             headers: { Authorization: token },
           });
           // console.log(response)
           setHistory(response.data);
-        }
-        else{
+        } else {
           const response = await axios.get("/user/history", {
             headers: { Authorization: token },
           });
           // console.log(response)
           setHistory(response.data);
         }
-
       };
       getHistory();
     }
-  }, [token,isAdmin,setHistory]);
+  }, [token, isAdmin, setHistory]);
 
   return (
     <HistoryOrderContainer>
@@ -52,7 +49,7 @@ function HistoryOrder() {
           {history.map((item) => (
             <HistoryItem key={item._id}>
               <td>{item.paymentID}</td>
-              <td>{new Date(item.createdAt).toLocaleString('en-GB')}</td>
+              <td>{new Date(item.createdAt).toLocaleString("en-GB")}</td>
               <td>
                 <Link to={`/history/${item._id}`}>View</Link>
               </td>
@@ -65,6 +62,7 @@ function HistoryOrder() {
 }
 
 const HistoryOrderContainer = styled.div`
+  
   overflow-x: auto;
 
   > h2,
@@ -77,6 +75,7 @@ const HistoryOrderContainer = styled.div`
 `;
 
 const HistoryPage = styled.table`
+
   margin: auto;
   width: 100%;
   > table {
@@ -86,6 +85,7 @@ const HistoryPage = styled.table`
 `;
 
 const HistoryItem = styled.tr`
+
   > th,
   tr,
   td {

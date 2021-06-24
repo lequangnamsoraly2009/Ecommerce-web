@@ -43,6 +43,8 @@ function Filters() {
 }
 
 const FilterContainer = styled.div`
+
+
     width: 100%;
     min-height: 40px;
     overflow: hidden;
