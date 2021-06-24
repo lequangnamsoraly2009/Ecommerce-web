@@ -1,21 +1,24 @@
 // import axios from 'axios';
-import { useState } from 'react'
+import axios from 'axios';
+import { useEffect, useState } from 'react'
 
 function ProductAPI() {
     const [products,setProducts] = useState([]);
+    const [callback,setCallback] = useState(false);
 
-    // const getProducts = async () => {
-    //     const response = await axios.get('/api/products');
-    //     setProducts(response.data.products)
-    // }
+    const getProducts = async () => {
+        const response = await axios.get('/api/products');
+        setProducts(response.data.products)
+    }
     
-    // useEffect(()=>{
-    //     getProducts();
-    // },[])
+    useEffect(()=>{
+        getProducts();
+    },[callback])
     
 
     return {
         products: [products,setProducts],
+        callback: [ callback, setCallback]
     }
 }
 

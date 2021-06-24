@@ -29,6 +29,7 @@ function CreateProduct() {
   const [onEdit, setOnEdit] = useState(false);
 
   const [products] = state.productsAPI.products;
+  const [callback,setCallback] = state.productsAPI.callback;
 
   useEffect(() => {
     if (param.id) {
@@ -140,8 +141,9 @@ function CreateProduct() {
         );
       }
 
-      setImages(false);
-      setProduct(initialState);
+      setCallback(!callback); // Render List products Again when a product updated
+      // setImages(false);
+      // setProduct(initialState);
       if(onEdit){
         alert("Update product successfully! GoodJob! ");
 
@@ -288,7 +290,7 @@ const UploadImage = styled.div`
       top: 0;
       left: 0;
       background: #fff;
-      color: rgb(250, 200, 107);
+      color: rgb(6, 165, 265);
       font-size: 17rem;
       text-align: center;
       cursor: pointer;

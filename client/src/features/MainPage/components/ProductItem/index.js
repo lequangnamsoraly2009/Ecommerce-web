@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-
 import BtnRender from "../BtnRender";
 
-function ProductItem({ product , isAdmin }) {
+function ProductItem({ product , isAdmin , handleCheck , deleteProduct} ) {
+
   return (
     <ProductItemContainer>
       {
-        isAdmin && <input type="checkbox" checked={product.checked} />
+        isAdmin && <input type="checkbox" checked={product.checked} onChange={()=>handleCheck(product._id)}/>
       }
       <img src={product.images.url} alt="Aloha ahihi" />
       <ProductItemBox>
@@ -15,7 +15,7 @@ function ProductItem({ product , isAdmin }) {
         <span>${product.price}</span>
         <p>{product.description}</p>
       </ProductItemBox>
-      <BtnRender product={product} />
+      <BtnRender product={product} deleteProduct={deleteProduct} />
       
     </ProductItemContainer>
   );

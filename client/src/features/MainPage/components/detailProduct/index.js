@@ -7,20 +7,21 @@ import {GlobalState} from '../../../../GlobalState';
 
 function DetailProduct() {
   const [detailProduct, setDetailProduct] = useState([]);
-  const params = useParams();
+  const param = useParams();
   const state = useContext(GlobalState);
   const addCart = state.userAPI.addCart;
   const [products] = state.productsAPI.products;
+  // console.log(detailProduct);
 
   useEffect(() => {
-    if (params.id) {
+    if (param.id) {
       products.forEach((product) => {
-        if (product._id === params.id) {
+        if (product._id === param.id) {
           setDetailProduct(product);
         }
       });
     }
-  }, [params.id, products]);
+  }, [param.id, products]);
 
   if (detailProduct.length === 0) return null;
 

@@ -34,13 +34,12 @@ router.post("/upload",auth, authAdmin, async (req, res) => {
         .status(400)
         .json({ status: false, msg: "File format is incorrect" });
     }
-    cloudinary.v2.uploader.upload(
+    await cloudinary.v2.uploader.upload(
       file.tempFilePath,
       { folder: "Ecommerce-web" },
-      async (err, result) => {
+       (err, result) => {
         if (err) throw err;
         removeTmp(file.tempFilePath);
-
         res.json({ public_id: result.public_id, url: result.secure_url });
       }
     );

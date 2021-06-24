@@ -21,7 +21,9 @@ function MainPage() {
       {!isLogged ? (
         <>
           <Switch>
+            <Redirect from="/cart" to="/" />
             <Route path="/" exact component={Products} />
+            <Route path="/detail/:id"  component={DetailProduct} />
             <Route path="/user" component={AuthUser} />
             <Route  component={NotFound} />
           </Switch>
