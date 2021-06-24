@@ -46,7 +46,7 @@ function DetailProduct() {
       <Related>
         <h2>Related Products</h2>
         <RelatedProducts>
-          {products.map((product) => {
+          {products.filter(product => product.price > detailProduct.price).slice(0,3).map((product) => {
             return (product.category === detailProduct.category && product.product_id !== detailProduct.product_id)? (
               <ProductItem key={product._id} product={product} />
             ) : null;

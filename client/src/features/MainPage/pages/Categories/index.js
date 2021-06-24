@@ -146,7 +146,7 @@ const InputCate = styled.div`
 `;
 
 const CategoriesColumn = styled.div`
-  width: 300px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   > h3 {

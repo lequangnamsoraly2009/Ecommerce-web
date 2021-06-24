@@ -5,20 +5,33 @@ import { useEffect, useState } from 'react'
 function ProductAPI() {
     const [products,setProducts] = useState([]);
     const [callback,setCallback] = useState(false);
+    const [category,setCategory] = useState('');
+    const [sort,setSort] = useState('');
+    const [search,setSearch] = useState('');
+    const [page,setPage] = useState(1);
+    const [result,setResult] = useState(0);
 
-    const getProducts = async () => {
-        const response = await axios.get('/api/products');
-        setProducts(response.data.products)
-    }
+
+    
     
     useEffect(()=>{
+        const getProducts = async () => {
+            const response = await axios.get(`/api/products?limit=${page*9}&${category}&${sort}&title[regex]=${search}`);
+            setProducts(response.data.products)
+            setResult(response.data.result)
+        }
         getProducts();
-    },[callback])
+    },[callback,category,search,sort,page])
     
 
     return {
         products: [products,setProducts],
-        callback: [ callback, setCallback]
+        callback: [ callback, setCallback],
+        category: [category,setCategory],
+        sort: [sort,setSort],
+        search: [search,setSearch],
+        page: [page,setPage],
+        result: [result,setResult]
     }
 }
 

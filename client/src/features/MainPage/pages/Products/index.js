@@ -4,6 +4,8 @@ import Loading from "../../../../components/Loading";
 import { useContext, useState } from "react";
 import { GlobalState } from "../../../../GlobalState";
 import axios from "axios";
+import Filters from "./Filters";
+import LoadMore from './LoadMore'
 
 function Products() {
   const state = useContext(GlobalState);
@@ -67,6 +69,7 @@ function Products() {
 
   return (
     <>
+    <Filters />
     {
       isAdmin && (
         <DeleteAll>
@@ -89,6 +92,7 @@ function Products() {
           );
         })}
       </ProductsContainer>
+      <LoadMore />
       {products.length === 0 && <Loading />}
     </>
   );
